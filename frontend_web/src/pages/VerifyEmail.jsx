@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { CheckCircle, XCircle, Waves } from 'lucide-react'
 
@@ -6,13 +6,14 @@ const API = import.meta.env.VITE_API_URL || ''
 
 export default function VerifyEmail() {
   const [params]  = useSearchParams()
-  const [status, setStatus] = useState('loading')
-  const [msg, setMsg]       = useState('')
+  const [status, setStatus] = useState('ready')  // ready → loading → success/error
+  const [msg, setMsg] = useState('')
 
-  useEffect(() => {
-    const token = params.get('token')
+  const token = params.get('token')
+
+  function doVerify() {
     if (!token) { setStatus('error'); setMsg('No verification token found in URL.'); return }
-
+    setStatus('loading')
     fetch(`${API}/auth/verify/${token}`)
       .then(async r => {
         const d = await r.json()
@@ -20,7 +21,7 @@ export default function VerifyEmail() {
         else      { setStatus('error');   setMsg(d.detail)  }
       })
       .catch(() => { setStatus('error'); setMsg('Network error — please try again.') })
-  }, [])
+  }
 
   return (
     <div className="auth-wrap" style={{ alignItems: 'center', justifyContent: 'center', background: '#0c1821' }}>
@@ -37,6 +38,18 @@ export default function VerifyEmail() {
           <Waves size={22} strokeWidth={1.8} style={{ color: '#0d8a8a' }} />
           <span>SalternIQ</span>
         </div>
+
+        {status === 'ready' && (
+          <>
+            <h2 style={{ marginBottom: 8, letterSpacing: '-0.02em' }}>Verify your email</h2>
+            <p style={{ color: 'var(--text-muted)', marginBottom: 24, fontSize: 14 }}>
+              Click the button below to confirm your email address and activate your account.
+            </p>
+            <button className="btn btn-primary btn-full" onClick={doVerify}>
+              Confirm email address
+            </button>
+          </>
+        )}
 
         {status === 'loading' && (
           <>
