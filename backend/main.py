@@ -76,7 +76,7 @@ MAX_FAILED_ATTEMPTS = 5
 LOCKOUT_MINUTES     = 15
 
 # ── Database ───────────────────────────────────────────────────
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "salterniq.db")
+DB_PATH = os.environ.get("DB_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "salterniq.db"))
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
