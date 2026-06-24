@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.env
+venv/
+.venv/
+
+# !! CREDENTIALS — never commit this !!
+backend/config.py
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# ML models are included in git so Render can load them at startup
+# (version-locked to scikit-learn 1.5.2)
+
+# Node
+node_modules/
+frontend_web/node_modules/
+
+# Vite build output
+frontend_web/dist/
+frontend/dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp

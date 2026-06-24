@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: salterniq-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      # Set these in the Render dashboard (Environment tab) — do NOT commit credentials:
+      # SMTP_USER      = shevoncosta5@gmail.com
+      # SMTP_PASSWORD  = <your Gmail App Password>
+      # APP_URL        = https://<your-vercel-app>.vercel.app
+      # ADMIN_EMAIL    = shevoncosta5@gmail.com
