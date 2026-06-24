@@ -58,7 +58,14 @@ except ImportError:
     SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
     APP_URL       = os.environ.get("APP_URL", "http://localhost:5173")
 
-EMAIL_ENABLED = bool(SMTP_USER)
+# Resend HTTP API (preferred — works on Render free tier)
+# Falls back to SMTP if RESEND_API_KEY is not set
+try:
+    from config import RESEND_API_KEY
+except ImportError:
+    RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+
+EMAIL_ENABLED = bool(RESEND_API_KEY or SMTP_USER)
 
 try:
     from config import ADMIN_EMAIL
@@ -185,7 +192,7 @@ def send_verification_email(to_email: str, name: str, token: str):
     link = f"{APP_URL}/verify?token={token}"
 
     if not EMAIL_ENABLED:
-        print(f"\n📧  [EMAIL DISABLED] Verification link for {to_email}:\n    {link}\n")
+        print(f"\n📧  [EMAIL DISABLED] Verification link for {to_email}:\n    {link}\n", flush=True)
         return
 
     html = f"""
@@ -205,6 +212,34 @@ def send_verification_email(to_email: str, name: str, token: str):
     </div>
     """
 
+    # ── Resend HTTP API (works on Render free tier) ─────────────
+    if RESEND_API_KEY:
+        try:
+            resp = requests.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {RESEND_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "from": "SalternIQ <onboarding@resend.dev>",
+                    "to": [to_email],
+                    "subject": "Verify your SalternIQ account",
+                    "html": html,
+                },
+                timeout=10,
+            )
+            if resp.ok:
+                print(f"✔  Verification email sent to {to_email}", flush=True)
+            else:
+                print(f"⚠  Resend error: {resp.status_code} {resp.text}", flush=True)
+                print(f"   Verification link: {link}", flush=True)
+        except Exception as e:
+            print(f"⚠  Resend request failed: {e}", flush=True)
+            print(f"   Verification link: {link}", flush=True)
+        return
+
+    # ── Fallback: SMTP ──────────────────────────────────────────
     msg = MIMEMultipart("alternative")
     msg["Subject"] = "Verify your SalternIQ account"
     msg["From"]    = f"SalternIQ <{SMTP_USER}>"
@@ -217,10 +252,10 @@ def send_verification_email(to_email: str, name: str, token: str):
             server.starttls()
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.sendmail(SMTP_USER, to_email, msg.as_string())
-        print(f"✔  Verification email sent to {to_email}")
+        print(f"✔  Verification email sent to {to_email}", flush=True)
     except Exception as e:
-        print(f"⚠  Email failed: {e}")
-        print(f"   Verification link: {link}")
+        print(f"⚠  Email failed: {e}", flush=True)
+        print(f"   Verification link: {link}", flush=True)
 
 # ── DB helpers ─────────────────────────────────────────────────
 def get_db():
