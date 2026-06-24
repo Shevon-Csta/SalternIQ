@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { CheckCircle, XCircle, Waves } from 'lucide-react'
 
+const API = import.meta.env.VITE_API_URL || ''
+
 export default function VerifyEmail() {
   const [params]  = useSearchParams()
   const [status, setStatus] = useState('loading')
@@ -11,7 +13,7 @@ export default function VerifyEmail() {
     const token = params.get('token')
     if (!token) { setStatus('error'); setMsg('No verification token found in URL.'); return }
 
-    fetch(`/auth/verify/${token}`)
+    fetch(`${API}/auth/verify/${token}`)
       .then(async r => {
         const d = await r.json()
         if (r.ok) { setStatus('success'); setMsg(d.message) }
