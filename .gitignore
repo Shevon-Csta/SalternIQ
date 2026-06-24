@@ -18,7 +18,7 @@ backend/config.py
 *.sqlite3
 
 # ML models are included in git so Render can load them at startup
-# (version-locked to scikit-learn 1.5.2)
+# (pinned to scikit-learn 1.5.2 — regenerate with train_models.py if version changes)
 
 # Node
 node_modules/
@@ -28,6 +28,9 @@ frontend_web/node_modules/
 frontend_web/dist/
 frontend/dist/
 
+# Vite cache files
+frontend_web/vite.config.js.timestamp-*
+
 # OS
 .DS_Store
 Thumbs.db
@@ -36,3 +39,12 @@ Thumbs.db
 .vscode/settings.json
 .idea/
 *.swp
+
+# FYP academic documents (not part of the codebase)
+*.xlsx
+[Template FYP -2025_26] Final Thesis .docx
+Final Year Project (FYP) - Details.docx
+Final Year Project (FYP) - Guidelines.docx
+
+# Legacy Flutter frontend (superseded by frontend_web)
+frontend/

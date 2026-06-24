@@ -1,5 +1,6 @@
-// In dev: empty string → Vite proxy forwards to localhost:8000
-// In production: VITE_API_URL = https://your-app.onrender.com
+// Base URL for all API requests.
+// In development the Vite proxy forwards requests to localhost:8000.
+// In production VITE_API_URL is set to the Render backend URL.
 const BASE = import.meta.env.VITE_API_URL || ''
 
 function getToken() {

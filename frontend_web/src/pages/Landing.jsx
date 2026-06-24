@@ -2,18 +2,13 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import './Landing.css'
 
-// ── Free Unsplash images — salt farming / Sri Lanka coastal ──────
+// ── Section imagery — salt farming and Sri Lanka coastal ──────────
 const IMG = {
   hero:     'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1920&q=80',
-  // aerial salt evaporation ponds
   salterns: 'https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1200&q=80',
-  // Sri Lanka coast / lagoon
   coast:    'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?auto=format&fit=crop&w=1200&q=80',
-  // farmer working in field
   farmer:   'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=80',
-  // wide aerial salt flats divider
   divider1: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1920&q=80',
-  // data / ML / tech
   tech:     'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80',
 }
 

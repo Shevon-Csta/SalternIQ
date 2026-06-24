@@ -58,8 +58,8 @@ except ImportError:
     SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
     APP_URL       = os.environ.get("APP_URL", "http://localhost:5173")
 
-# Resend HTTP API (preferred — works on Render free tier)
-# Falls back to SMTP if RESEND_API_KEY is not set
+# Resend HTTP API — used when RESEND_API_KEY is set (SMTP is the fallback)
+# Render blocks outbound SMTP, so Resend is the primary delivery method in production
 try:
     from config import RESEND_API_KEY
 except ImportError:
@@ -97,7 +97,7 @@ def init_db():
         )
     """)
 
-    # Add new columns to existing DB if upgrading from old version
+    # Safe column additions for schema migrations; silently skips if column already exists
     for col, defn in [
         ("verified",        "INTEGER DEFAULT 0"),
         ("failed_attempts", "INTEGER DEFAULT 0"),
@@ -212,7 +212,7 @@ def send_verification_email(to_email: str, name: str, token: str):
     </div>
     """
 
-    # ── Resend HTTP API (works on Render free tier) ─────────────
+    # ── Resend HTTP API ────────────────────────────────────────────
     if RESEND_API_KEY:
         try:
             resp = requests.post(
