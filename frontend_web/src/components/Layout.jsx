@@ -6,6 +6,8 @@ import {
 } from 'lucide-react'
 import { api } from '../api'
 
+const API = import.meta.env.VITE_API_URL || ''
+
 export default function Layout() {
   const navigate = useNavigate()
   const [user, setUser]             = useState(null)
@@ -27,7 +29,7 @@ export default function Layout() {
   const handleResend = async () => {
     if (!user) return
     try {
-      await fetch('/auth/resend-verification', {
+      await fetch(`${API}/auth/resend-verification`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email })
